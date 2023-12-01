@@ -71,7 +71,7 @@ export class AuthenticationController {
 
   /**
    * @desc  @LocalAuthenticationGuard will be triggered @LocalStrategy => @getAuthenticatedUser => user per request
-   * @route Post /authentication/log-in
+   * @route Production /authentication/log-in
    * @access public
    */
   // @UseGuards(LocalAuthenticationGuard)

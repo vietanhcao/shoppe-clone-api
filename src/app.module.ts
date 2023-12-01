@@ -4,6 +4,8 @@ import { UsersModule } from './users/users.module';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { LocalFilesModule } from './local-files/local-files.module';
 import { ConfigModule } from '@nestjs/config';
+import CategoriesModule from './categories/categories.module';
+import ProductionModule from './production/production.module';
 
 @Module({
   imports: [
@@ -12,6 +14,8 @@ import { ConfigModule } from '@nestjs/config';
     DatabaseModule,
     AuthenticationModule,
     LocalFilesModule,
+    CategoriesModule,
+    ProductionModule,
   ],
   controllers: [],
   providers: [],

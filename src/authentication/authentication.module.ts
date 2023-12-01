@@ -29,6 +29,7 @@ import { JwtStrategy } from './token/jwt.strategy';
       imports: [ConfigModule],
       inject: [ConfigService],
       extraProviders: [], // fix error circular
+      isGlobal: true,
       useFactory: (configService: ConfigService) => {
         return {
           store: redisStore,

@@ -5,9 +5,30 @@ import { LocalFilesService } from './local-files.service';
 import { Response } from 'express';
 import { join } from 'path';
 
-@Controller('local-files')
+@Controller('files')
 export class LocalFilesController {
   constructor(private readonly localFilesService: LocalFilesService) {}
+
+  @Get('images/:fileName')
+  async getImageById(
+    @Param() { fileName }: { fileName: string },
+    @Res({ passthrough: true }) response: Response, // doing with pipeline
+  ) {
+    // todo explan flow run
+    // - StreamableFile show in client??
+    // const file = await this.localFilesService.getFileById(fileName);
+    /**
+     * @cwd  process.cwd() returns the value of directory where we run the node process
+     * @__dirname returns the value of directory where the current running file resides.
+     */
+
+    const stream = createReadStream(join(process.cwd(), 'images/' + fileName));
+    response.set({
+      'Content-Disposition': `inline; filename="${fileName}"`,
+      'Content-Type': 'image/jpeg',
+    });
+    return new StreamableFile(stream);
+  }
 
   @Get(':id')
   async getDatabaseFileById(
