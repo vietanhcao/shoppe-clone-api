@@ -6,6 +6,7 @@ import { LocalFilesModule } from './local-files/local-files.module';
 import { ConfigModule } from '@nestjs/config';
 import CategoriesModule from './categories/categories.module';
 import ProductionModule from './production/production.module';
+import PurchaseModule from './purchase/purchase.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import ProductionModule from './production/production.module';
     LocalFilesModule,
     CategoriesModule,
     ProductionModule,
+    PurchaseModule,
   ],
   controllers: [],
   providers: [],

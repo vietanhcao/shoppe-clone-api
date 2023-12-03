@@ -7,6 +7,7 @@ import {
   HttpCode,
   Inject,
   Post,
+  Put,
   Req,
   Res,
   UseGuards,
@@ -16,12 +17,13 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { Request, Response } from 'express';
 import * as _ from 'lodash';
+import { omit } from 'lodash';
 import { CacheBuilder } from '../common/builder/cache.builder';
 import { StrategyKey } from '../common/constant';
 import Resolve from '../common/helpers/Resolve';
 import UsersService from '../users/users.service';
 import { AuthenticationService } from './authentication.service';
-import RegisterDto from './dto/register.dto';
+import RegisterDto, { ChangePasswordDto } from './dto/register.dto';
 import RequestWithUser from './requestWithUser.interface';
 import JwtAuthenticationGuard from './token/jwt-authentication.guard';
 import { JwtRefreshGuard } from './token/jwtRefreshAuthentication.guard';
@@ -110,7 +112,7 @@ export class AuthenticationController {
       this.authenticationService.getCookieWithJwtAccessToken(request.user.id);
     request.res.setHeader('Set-Cookie', accessTokenCookie.cookie);
     return Resolve.ok(200, 'success', {
-      user: _.omit(request.user, ['currentHashedRefreshToken']),
+      user: _.omit(request.user, ['currentHashedRefreshToken', 'password']),
       accessToken: accessTokenCookie.token,
     });
   }
@@ -127,20 +129,33 @@ export class AuthenticationController {
     return response.json(Resolve.ok(200, 'success'));
   }
 
+  //dto validation
+  @Put('change-password')
   @UseGuards(JwtAuthenticationGuard)
-  @Get()
+  async changePassword(
+    @Body() dto: ChangePasswordDto,
+    @Req() request: RequestWithUser,
+  ) {
+    await this.authenticationService.changePassword(dto, request.user);
+
+    return Resolve.ok(200, 'Successs');
+  }
+
+  @UseGuards(JwtAuthenticationGuard)
+  @Get('me')
   async authenticate(@Req() request: RequestWithUser) {
     // cache builder
     const builder = new CacheBuilder();
     const callback = () => {
-      return request.user;
+      console.log(request.user);
+      return omit(request.user, ['password', 'currentHashedRefreshToken']);
     };
-    const cacheKey = `authentication:${request.user.email}`;
+    const cacheKey = `auth:${request.user.email}`;
     const user = await builder
       .setCacheKey(cacheKey)
       .setCacheStore(this.cacheStore)
       .setCallback(callback)
-      .ttl(60 * 60)
+      .ttl(1)
       .build<string>();
 
     return Resolve.ok(200, 'Success', user);

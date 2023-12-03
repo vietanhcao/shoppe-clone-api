@@ -1,8 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Exclude, Transform, Type } from 'class-transformer';
+import { Exclude, Transform } from 'class-transformer';
 import { Document, ObjectId } from 'mongoose';
 import Role from '../../authentication/enum/role.enum';
-import { Address, AddressSchema } from './address.schema';
 
 export type UserDocument = User & Document;
 
@@ -20,12 +19,19 @@ export class User {
   email: string;
 
   @Prop()
-  firstName: string;
+  avatar: string;
 
   @Prop()
-  lastName: string;
+  date_of_birth: string;
 
-  fullName: string;
+  @Prop()
+  address: string;
+
+  @Prop()
+  phone: string;
+
+  @Prop()
+  name: string;
 
   @Prop({ require: true })
   @Exclude()
@@ -39,10 +45,6 @@ export class User {
   @Exclude()
   currentHashedRefreshToken?: string;
 
-  @Prop({ type: AddressSchema }) // one to one relationship
-  @Type(() => Address)
-  address: Address;
-
   //Populating virtual properties query populate will show list (in jwt.strategy.ts) not save in UserSchema
   // @Type(() => Post)
   // posts: Post[];
@@ -50,17 +52,8 @@ export class User {
 
 const UserSchema = SchemaFactory.createForClass(User);
 // index text search queries
-UserSchema.index({ firstName: 'text', lastName: 'text' });
+UserSchema.index({ name: 'text', email: 'text' });
 // UserSchema.index({ firstName: 1, lastName: 1 });//ascending index
-
-//@Getters fullName not save in database and auto return when has request
-// UserSchema.virtual('fullName').get(function (this: User) {
-//   return `${this.firstName} ${this.lastName}`;
-// });
-// .set(function (this: UserDocument, fullName: string) {
-//   const [firstName, lastName] = fullName.split(' ');
-//   this.set({ firstName, lastName });
-// })
 
 //Populating virtual properties
 

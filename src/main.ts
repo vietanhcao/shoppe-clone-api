@@ -1,12 +1,16 @@
-import { ValidationError, ValidationPipe } from '@nestjs/common';
+import {
+  UnprocessableEntityException,
+  ValidationError,
+  ValidationPipe,
+} from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationException } from './common/exceptions/validation-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     cors: { origin: '*' },
   });
+
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -14,7 +18,7 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
       transform: true,
       exceptionFactory: (errors: ValidationError[]) =>
-        new ValidationException(errors),
+        new UnprocessableEntityException(errors),
     }),
   );
   app.setGlobalPrefix('/api');

@@ -6,7 +6,6 @@ import {
   IsString,
   MinLength,
 } from 'class-validator';
-import { Address } from '../schema/address.schema';
 
 export class CreateUserDto {
   @IsEmail()
@@ -26,9 +25,37 @@ export class CreateUserDto {
   @IsOptional()
   lastName?: string;
 
-  @Type(() => Address)
+  @IsString()
   @IsOptional()
-  address?: Address;
+  address?: string;
 }
 
-export default CreateUserDto;
+export class UpdateUserDto {
+  @IsString()
+  @IsOptional()
+  avatar?: string;
+
+  @IsString()
+  @IsOptional()
+  name?: string;
+
+  @IsString()
+  @IsOptional()
+  lastName?: string;
+
+  @IsString()
+  @IsOptional()
+  address?: string;
+
+  @IsString()
+  @IsOptional()
+  phone?: string;
+
+  @IsString()
+  @IsOptional()
+  date_of_birth?: string;
+
+  @IsString()
+  @IsOptional()
+  password?: string;
+}

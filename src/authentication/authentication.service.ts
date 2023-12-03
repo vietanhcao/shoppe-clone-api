@@ -1,4 +1,4 @@
-import RegisterDto from './dto/register.dto';
+import RegisterDto, { ChangePasswordDto } from './dto/register.dto';
 import * as bcrypt from 'bcrypt';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import MongoError from '../database/mongoError.enum';
@@ -6,6 +6,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import TokenPayload from './tokenPayload.interface';
 import UsersService from '../users/users.service';
+import { User } from '../users/schema/user.schema';
 
 @Injectable()
 export class AuthenticationService {
@@ -105,6 +106,18 @@ export class AuthenticationService {
         HttpStatus.BAD_REQUEST,
       );
     }
+  }
+
+  async changePassword(dto: ChangePasswordDto, user: User) {
+    await this.verifyPassword(dto.password, user.password);
+
+    const hashedPassword = await bcrypt.hash(dto.new_password, 10);
+    const result = await this.usersService.update(
+      { password: hashedPassword },
+      user,
+    );
+
+    return result;
   }
   // public getCookieWithJwtToken(userId: number) {
   //   const payload: TokenPayload = { userId };

@@ -9,7 +9,7 @@ import * as mongoose from 'mongoose';
 import { Model } from 'mongoose';
 import LocalFileDto from '../local-files/local-files.dto';
 import { LocalFilesService } from '../local-files/local-files.service';
-import CreateUserDto from './dto/createUser.dto';
+import { CreateUserDto, UpdateUserDto } from './dto/createUser.dto';
 import { User, UserDocument } from './schema/user.schema';
 
 @Injectable()
@@ -92,7 +92,7 @@ class UsersService {
       // )
       .lean();
     if (!user) {
-      throw new NotFoundException();
+      throw new NotFoundException('user not found');
     }
     //add property id
     user.id = user._id.toString();
@@ -116,6 +116,26 @@ class UsersService {
     //   },
     // });
     return createdUser.save();
+  }
+
+  async update(dto: UpdateUserDto, user: User) {
+    // put do this
+    // .findByIdAndUpdate(id, postData)
+    // .setOptions({ overwrite: true, new: true })
+    const result = await this.userModel
+      //update partial
+      .findOneAndUpdate({ _id: user._id }, dto, {
+        new: true,
+      });
+    if (!result) {
+      throw new NotFoundException();
+    }
+    // if (result) {
+    //   await this.postsSearchService.update(result);
+    //   return result;
+    // }
+    // await this.clearCache();
+    return result;
   }
 }
 

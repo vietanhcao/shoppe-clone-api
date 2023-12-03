@@ -10,20 +10,17 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import Role from '../authentication/enum/role.enum';
-import RoleGuard from '../authentication/guards/role.guard';
 import RequestWithUser from '../authentication/requestWithUser.interface';
 import JwtAuthenticationGuard from '../authentication/token/jwt-authentication.guard';
-import { QueryParse } from '../common/client-query/client-query.type';
 import Resolve from '../common/helpers/Resolve';
 import ParamsWithId from '../utils/paramsWithId';
 import PostDto from './dto/post.dto';
 import UpdatePostDto from './dto/updatePost.dto';
-import PostsService from './production.service';
+import ProductService from './production.service';
 
 @Controller('products')
 export default class PostsController {
-  constructor(private readonly postsService: PostsService) {}
+  constructor(private readonly producService: ProductService) {}
 
   /**
    * Lấy ra danh sách các bài viết có trong cache
@@ -38,9 +35,9 @@ export default class PostsController {
   ) {
     if (search) {
       // hide elastic search
-      // return this.postsService.searchForPosts(search, skip, limit);
+      // return this.producService.searchForPosts(search, skip, limit);
     }
-    const { result, pagination } = await this.postsService.findAll(query);
+    const { result, pagination } = await this.producService.findAll(query);
     return Resolve.ok(0, 'Success', { products: result, pagination });
   }
 
@@ -57,9 +54,9 @@ export default class PostsController {
   // ) {
   //   if (search) {
   //     // hide elastic search
-  //     // return this.postsService.searchForPosts(search, skip, limit);
+  //     // return this.producService.searchForPosts(search, skip, limit);
   //   }
-  //   const { result, pagination } = await this.postsService.findAll(
+  //   const { result, pagination } = await this.producService.findAll(
   //     null,
   //     searchQuery,
   //     req.user,
@@ -70,21 +67,21 @@ export default class PostsController {
 
   @Get(':id')
   async getPost(@Param() { id }: ParamsWithId) {
-    const response = await this.postsService.findOne(id);
+    const response = await this.producService.findOne(id);
     return Resolve.ok(0, 'Success', response);
   }
 
   @Post()
   @UseGuards(JwtAuthenticationGuard) // use two-factor authentication
   async createPost(@Body() post: PostDto, @Req() req: RequestWithUser) {
-    await this.postsService.create(post, req.user);
+    await this.producService.create(post, req.user);
     return Resolve.ok(0, 'Success');
   }
 
   // @Delete(':id')
   // @UseGuards(JwtAuthenticationGuard)
   // async deletePost(@Param() { id }: ParamsWithId, @Req() req: RequestWithUser) {
-  //   await this.postsService.delete(id, req.user);
+  //   await this.producService.delete(id, req.user);
   //   return Resolve.ok(0, 'Success');
   // }
 
@@ -95,7 +92,7 @@ export default class PostsController {
     @Body() post: UpdatePostDto,
     @Req() req: RequestWithUser,
   ) {
-    await this.postsService.update(id, post, req.user);
+    await this.producService.update(id, post, req.user);
     return Resolve.ok(0, 'Success');
   }
 
@@ -106,7 +103,7 @@ export default class PostsController {
     @Body() post: UpdatePostDto,
     @Req() req: RequestWithUser,
   ) {
-    await this.postsService.update(id, post, req.user);
+    await this.producService.update(id, post, req.user);
     return Resolve.ok(0, 'Success');
   }
 }
