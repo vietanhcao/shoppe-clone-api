@@ -60,7 +60,6 @@ export default class ClientQuery<T> {
       isGetAllPagination ? {} : mongoFilter,
       limit,
     );
-    console.log('mongoFilter', mongoFilter);
     //- Tạo câu query database theo query client
     const results: T[] = await this.model
       .find(mongoFilter)
@@ -118,7 +117,6 @@ export default class ClientQuery<T> {
     const config = QUERY_MAPPING;
     const filter = {};
     const sort = {};
-    console.log('query', query);
     //- Chuyển query sang dạng query của mongoose
     keys.forEach((key) => {
       // Lặp qua các giá trị query filter

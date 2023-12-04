@@ -147,7 +147,6 @@ export class AuthenticationController {
     // cache builder
     const builder = new CacheBuilder();
     const callback = () => {
-      console.log(request.user);
       return omit(request.user, ['password', 'currentHashedRefreshToken']);
     };
     const cacheKey = `auth:${request.user.email}`;

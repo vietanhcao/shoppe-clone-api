@@ -71,7 +71,6 @@ export class AuthenticationService {
           HttpStatus.BAD_REQUEST,
         );
       }
-      console.log(error);
 
       throw new HttpException(
         'Something went wrong',

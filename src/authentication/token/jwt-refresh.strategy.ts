@@ -33,7 +33,6 @@ export class JwtRefreshTokenStrategy extends PassportStrategy(
 
     //remove prefix Bearer
     const token = refreshToken.split(' ')[1];
-    console.log('refreshToken', refreshToken);
     return this.userService.getUserIfRefreshTokenMatches(token, payload.userId);
   }
 }
