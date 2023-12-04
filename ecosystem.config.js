@@ -1,7 +1,7 @@
 module.exports = {
   apps: [
     {
-      name: 'serve-data-prod',
+      name: 'shoppe-clone-api',
       script: 'dist/main.js',
       // cwd: __dirname, // path-to-project
       instances: 0,
